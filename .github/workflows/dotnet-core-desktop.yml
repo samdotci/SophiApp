@@ -5,6 +5,11 @@ on:
     tags:
       - "*"
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release Tag'
+        required: true
+        default: 'SophiAppCE_31.10.21'
 
 jobs:
   build:
@@ -31,7 +36,7 @@ jobs:
         
     - name: Preparing The App Files
       run: |
-        . "$env:App_Script_Path\Set-ReleaseTag.ps1" "${{ github.ref }}"
+        . "$env:App_Script_Path\Set-ReleaseTag.ps1" "${{ github.event.inputs.release_tag }}"
         . "$env:App_Script_Path\Uncomment-AppMethods.ps1"
         . "$env:App_Script_Path\Set-DebugMode.ps1"        
         . "$env:App_Script_Path\Set-WinmdPath.ps1"
@@ -71,7 +76,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: SophiApp.zip
-        tag: ${{ github.ref }}
+        tag: ${{ github.event.inputs.release_tag }}
         overwrite: true
         file_glob: true
         prerelease: true
